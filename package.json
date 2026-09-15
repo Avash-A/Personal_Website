@@ -1,0 +1,11 @@
+{
+  "name": "friend-portfolio",
+  "private": true,
+  "scripts": {
+    "build:css": "sass --style=expanded --source-map styles/styles.scss styles/styles.css",
+    "watch:css": "npm run build:css -- --watch"
+  },
+  "devDependencies": {
+    "sass": "1.104.1"
+  }
+}
