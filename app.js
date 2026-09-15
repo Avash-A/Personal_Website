@@ -62,11 +62,38 @@
     const form = document.getElementById('form');
     const status = document.getElementById('form-status');
     const fields = document.getElementById('contact-fields');
-    if (form && status && fields) {
-        form.addEventListener('submit', event => {
-            event.preventDefault();
-            status.textContent = 'Your message was not sent. Contact submission is not configured yet.';
+    const submitButton = form?.querySelector('button[type="submit"]');
+    if (form && status && fields && submitButton) {
+        const emailClient = window.emailjs;
+        emailClient?.init({
+            publicKey: 'XPDgoH5L5R42hGXsc',
         });
+
+        form.addEventListener('submit', async event => {
+            event.preventDefault();
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            submitButton.disabled = true;
+            form.setAttribute('aria-busy', 'true');
+            status.textContent = 'Sending...';
+
+            try {
+                if (!emailClient) throw new Error('EmailJS SDK unavailable');
+                await emailClient.sendForm('service_11datrw', 'template_7ugnztm', form);
+                status.textContent = 'Message sent successfully. Thank you for reaching out!';
+                form.reset();
+            } catch {
+                status.textContent = 'Your message could not be sent. Please try again.';
+            } finally {
+                submitButton.disabled = false;
+                form.removeAttribute('aria-busy');
+            }
+        });
+
         // Keep native submission disabled if this script fails to load.
         fields.disabled = false;
     }

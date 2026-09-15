@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior Design | Avash Aryal</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+</head>
+<body class="education-page senior-design-page">
+    <main class="education-shell">
+        <a class="main-btn education-back" href="index.html#portfolio">
+            <span class="btn-text">Back to Portfolio</span>
+            <span class="btn-icon"><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
+        </a>
+
+        <header class="education-hero senior-design-hero">
+            <h1>SENIOR DESIGN</h1>
+            <p class="education-concentration">Renewable Energy Power Conversion with GaN Device</p>
+        </header>
+
+        <div class="senior-design-content">
+            <section class="senior-section senior-section--overview" aria-labelledby="overview-heading">
+                <h2 id="overview-heading">Project Overview</h2>
+                <div class="senior-copy">
+                    <p>This senior design project focuses on developing a small-scale renewable-energy power system that integrates solar and wind generation, battery storage, DC-DC power conversion, embedded control, sensing, and semiconductor-device development.</p>
+                    <p>The system is being designed so renewable sources charge a battery, while a controlled power-conversion stage delivers regulated power to representative electrical loads. The project also includes the fabrication and characterization of a GaN power semiconductor device intended to eventually replace the commercial switching device used in the converter.</p>
+                </div>
+            </section>
+
+            <section class="senior-section" aria-labelledby="objectives-heading">
+                <h2 id="objectives-heading">Project Objectives</h2>
+                <ul class="objective-grid">
+                    <li>Integrate solar and wind power sources into a common renewable-energy system.</li>
+                    <li>Charge and operate a battery-based energy-storage stage safely.</li>
+                    <li>Design and simulate DC-DC power-conversion circuitry.</li>
+                    <li>Generate converter PWM control using an Arduino microcontroller.</li>
+                    <li>Implement voltage/current sensing for system monitoring and control.</li>
+                    <li>Design appropriate gate-drive circuitry for the switching device.</li>
+                    <li>Fabricate and characterize a GaN power semiconductor device.</li>
+                    <li>Replace the commercial converter switch with the fabricated GaN device in a later project phase.</li>
+                </ul>
+            </section>
+
+            <section class="senior-section" aria-labelledby="architecture-heading">
+                <h2 id="architecture-heading">System Architecture</h2>
+                <div class="architecture-diagram" role="img" aria-label="Solar and wind generation feed an energy input and charging stage, then battery storage, a DC-DC power converter, and representative loads. Arduino PWM controls a gate driver and power switch, while voltage and current sensors feed the Arduino.">
+                    <div class="system-flow system-flow--primary">
+                        <div class="source-stack">
+                            <div class="architecture-block">Solar Generation</div>
+                            <div class="architecture-block">Wind Generation</div>
+                        </div>
+                        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+                        <div class="architecture-block architecture-block--accent">Boost Converter / (CC/CV)Charging Stage</div>
+                        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+                        <div class="architecture-block">Battery Storage</div>
+                        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+                        <div class="architecture-block architecture-block--accent">DC-DC Power Converter</div>
+                        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+                        <div class="architecture-block">Representative Loads</div>
+                    </div>
+                    <div class="system-flow system-flow--control">
+                        <div class="architecture-block">Arduino / MCU</div>
+                        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+                        <div class="architecture-block">PWM Control</div>
+                        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+                        <div class="architecture-block">Gate Driver</div>
+                        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+                        <div class="architecture-block">Power Switch</div>
+                    </div>
+                    <div class="system-flow system-flow--sensing">
+                        <div class="architecture-block">Voltage / Current Sensors</div>
+                        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+                        <div class="architecture-block architecture-block--accent">Arduino / MCU</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="senior-section" aria-labelledby="generation-heading">
+                <h2 id="generation-heading">Solar &amp; Wind Generation</h2>
+                <p>The renewable source model combines solar and wind generation to provide energy to the battery-storage system. The project uses multiple small solar panels and wind-generator models to represent hybrid renewable generation in a laboratory-scale demonstration.</p>
+                <div class="target-grid">
+                    <div class="target-card">
+                        <h3>Combined System Target</h3>
+                        <p>24 W at approximately 12 V and 2 A</p>
+                    </div>
+                    <div class="target-card">
+                        <h3>Solar Subsystem</h3>
+                        <p>Approximately 12 W</p>
+                    </div>
+                    <div class="target-card">
+                        <h3>Wind Subsystem</h3>
+                        <p>Approximately 12 W</p>
+                    </div>
+                    <div class="target-card">
+                        <h3>Wind Generation Concept</h3>
+                        <p>Multiple small generators mechanically driven through a common external motor and belt arrangement for the physical demonstration model.</p>
+                    </div>
+                </div>
+                <p class="design-note">These values are design targets for the laboratory model and do not represent measured final performance.</p>
+            </section>
+
+            <section class="senior-section" aria-labelledby="battery-heading">
+                <h2 id="battery-heading">Battery Storage</h2>
+                <p>The energy-storage stage uses a 12 V LiFePO4 battery with an integrated battery-management system (BMS). The battery provides a stable energy source between the intermittent renewable generation stage and the downstream power converter.</p>
+                <ul class="technical-tags" aria-label="Battery storage features">
+                    <li>12 V LiFePO4 battery</li>
+                    <li>approximately 5&ndash;6 Ah capacity</li>
+                    <li>integrated BMS</li>
+                    <li>over-voltage / under-voltage protection</li>
+                    <li>short-circuit protection</li>
+                    <li>renewable-energy buffering</li>
+                </ul>
+            </section>
+
+            <section class="senior-section senior-section--major" aria-labelledby="conversion-heading">
+                <h2 id="conversion-heading">Power Conversion</h2>
+                <p>The project investigates DC-DC converter stages for controlling renewable-energy charging and providing regulated power from the battery. LTspice is used to design and evaluate the power stage before physical implementation.</p>
+                <p>The converter architecture includes development before and/or after the battery as the system design evolves.</p>
+                <div class="senior-subsection">
+                    <h3>Boost Converter / Charging Stage</h3>
+                    <div class="senior-split">
+                        <div>
+                            <h4>Converter Elements</h4>
+                            <ul class="senior-list">
+                                <li>inductor-based DC-DC boost topology</li>
+                                <li>switching MOSFET / GaN device</li>
+                                <li>Schottky diode</li>
+                                <li>input and output capacitors</li>
+                                <li>gate-drive circuit</li>
+                                <li>current and voltage sensing</li>
+                                <li>PWM duty-cycle control</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Representative Design Ranges</h4>
+                            <dl class="design-ranges">
+                                <div><dt>Inductor</dt><dd>Approximately 47&ndash;100 &micro;H</dd></div>
+                                <div><dt>Capacitors</dt><dd>Approximately 220&ndash;470 &micro;F plus ceramic decoupling</dd></div>
+                                <div><dt>Switch Rating Target</dt><dd>At least 40 V and several amperes</dd></div>
+                                <div><dt>Schottky Diode Target</dt><dd>At least 40 V and approximately 3&ndash;5 A</dd></div>
+                                <div><dt>Gate Resistor</dt><dd>Approximately 5&ndash;15 &Omega;</dd></div>
+                                <div><dt>Gate-Source Pull-Down</dt><dd>Approximately 10&ndash;47 k&Omega;</dd></div>
+                            </dl>
+                        </div>
+                    </div>
+                    <p class="design-note">These values are representative design ranges and targets rather than finalized manufactured specifications.</p>
+                </div>
+            </section>
+
+            <div class="senior-detail-grid">
+                <section class="senior-section" aria-labelledby="arduino-heading">
+                    <h2 id="arduino-heading">Arduino Control &amp; PWM</h2>
+                    <p>An Arduino microcontroller is used as the control and monitoring platform for the converter system. It generates PWM signals for converter switching and reads voltage/current sensors throughout the renewable-energy and load paths.</p>
+                    <ul class="senior-list">
+                        <li>PWM generation</li>
+                        <li>duty-cycle adjustment</li>
+                        <li>voltage sensing</li>
+                        <li>current sensing</li>
+                        <li>converter-control logic</li>
+                        <li>monitoring of renewable input and load branches</li>
+                    </ul>
+                    <p>One Arduino is being investigated for controlling multiple converter stages and several sensors. A completed closed-loop controller is not assumed at this stage.</p>
+                </section>
+
+                <section class="senior-section" aria-labelledby="gate-heading">
+                    <h2 id="gate-heading">Gate-Drive Circuitry</h2>
+                    <p>Because the Arduino cannot directly drive a power transistor efficiently, a dedicated gate-driver IC is used between the microcontroller and the converter switch. The driver provides the current and switching capability required to charge and discharge the transistor gate quickly.</p>
+                    <ul class="senior-list">
+                        <li>Arduino PWM input</li>
+                        <li>gate-driver IC</li>
+                        <li>gate resistor</li>
+                        <li>gate-source pull-down resistor</li>
+                        <li>local decoupling capacitors</li>
+                        <li>power MOSFET / GaN gate</li>
+                    </ul>
+                </section>
+
+                <section class="senior-section" aria-labelledby="sensing-heading">
+                    <h2 id="sensing-heading">Sensing &amp; Monitoring</h2>
+                    <p>The project monitors important electrical points throughout the system. Intended sensing points include:</p>
+                    <ul class="senior-list">
+                        <li>combined wind generation</li>
+                        <li>combined solar generation</li>
+                        <li>combined renewable-energy bus</li>
+                        <li>converter output</li>
+                        <li>battery output</li>
+                        <li>individual load branches</li>
+                    </ul>
+                    <p>Voltage/current measurements are intended to support system monitoring and future feedback-control implementation.</p>
+                </section>
+            </div>
+
+            <section class="senior-section senior-section--gan" aria-labelledby="gan-heading">
+                <h2 id="gan-heading">GaN Power Semiconductor Device</h2>
+                <p>A major goal of the project is to transition from a converter built with a commercial switching device to one that uses a GaN power semiconductor device fabricated and characterized as part of the project.</p>
+                <div class="phase-grid">
+                    <article class="phase-card">
+                        <p class="phase-label">Phase 1</p>
+                        <p>Build, simulate, and demonstrate the renewable-energy power-conversion system using commercially available switching devices.</p>
+                    </article>
+                    <article class="phase-card">
+                        <p class="phase-label">Phase 2</p>
+                        <p>Fabricate and characterize a GaN power device and evaluate its use as the switching element in the previously developed converter.</p>
+                    </article>
+                </div>
+                <p>The fabrication work is intended to connect semiconductor-device engineering directly with a practical power-electronics application.</p>
+            </section>
+
+            <section class="senior-section" aria-labelledby="tools-heading">
+                <h2 id="tools-heading">Tools &amp; Technologies</h2>
+                <ul class="technology-grid">
+                    <li>LTspice</li>
+                    <li>Arduino</li>
+                    <li>PWM Control</li>
+                    <li>DC-DC Converters</li>
+                    <li>GaN Power Devices</li>
+                    <li>Gate Drivers</li>
+                    <li>Voltage / Current Sensing</li>
+                    <li>Power Electronics</li>
+                    <li>Semiconductor Fabrication</li>
+                    <li>Renewable Energy Systems</li>
+                </ul>
+            </section>
+
+            <section class="senior-section" aria-labelledby="status-heading">
+                <h2 id="status-heading">Current Status</h2>
+                <p>The project is currently in development. System architecture, converter design, component selection, LTspice simulation, sensing, embedded control, and GaN-device integration are being developed progressively through the senior design sequence.</p>
+            </section>
+
+            <section class="senior-section senior-section--placeholder" aria-labelledby="media-heading">
+                <h2 id="media-heading">Project Media &amp; Results</h2>
+                <p>Schematics, simulation results, hardware photographs, device-fabrication progress, and measured performance will be added as the project develops.</p>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
