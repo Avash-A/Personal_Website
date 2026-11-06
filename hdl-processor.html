@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Educational Processor | Avash Aryal</title>
+    <link rel="stylesheet" href="styles/styles.css?v=20261106">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+</head>
+<body class="education-page project-detail-page hdl-project-page">
+    <main class="education-shell">
+        <a class="main-btn education-back" href="academic-projects.html"><span class="btn-text">Back to Academic Projects</span><span class="btn-icon"><i class="fas fa-arrow-left" aria-hidden="true"></i></span></a>
+        <header class="education-hero project-detail-hero"><h1>SIMPLE EDUCATIONAL PROCESSOR</h1><p class="education-concentration">HDL-Based Processor Architecture</p></header>
+        <div class="project-detail-content">
+            <section class="detail-section detail-section--accent"><h2>Project Overview</h2><p>This project adapts and extends a course starter structure into a modular SystemVerilog educational processor. It fetches 32-bit instruction words, decodes opcode and operand fields, routes data among memory and internal registers, sequences separate arithmetic units, and updates instruction flow through conditional branches.</p><p>The supplied design supports integer arithmetic, matrix operations, memory/register operands, and BNE, BEQ, BLT, and BGT branch conditions. No standalone jump instruction or logical/bitwise instruction family is defined in the supplied source.</p></section>
+            <section class="detail-section"><h2>Processor Architecture</h2><div class="module-grid"><article><h3>Instruction Memory</h3><p>Stores the 32-bit instruction sequence and drives fetched instructions onto the bus when addressed.</p></article><article><h3>Main Memory</h3><p>Provides read/write storage for 256-bit data values through the shared address and control interface.</p></article><article><h3>Execution Engine</h3><p>Coordinates fetch, decode, operand movement, ALU sequencing, writeback, and conditional branch updates.</p></article><article><h3>Matrix ALU</h3><p>Implements supported matrix add, subtract, transpose, scale, and multiply operations.</p></article><article><h3>Integer ALU</h3><p>Implements integer add, subtract, multiply, and divide on the lower 16-bit operands.</p></article><article><h3>Simulation Harness</h3><p>Connects modules, generates clock/reset activity, records waveforms, and checks selected memory/register results.</p></article></div></section>
+            <section class="detail-section"><h2>Datapath</h2><p>The design uses a 16-bit address bus and a shared 256-bit data path for main memory, internal registers, and ALU data movement. The execution module contains four 256-bit internal registers plus two temporary branch-operand registers. Instruction fetches use 32-bit words divided into opcode, destination, source-one, and source-two fields.</p></section>
+            <section class="detail-section"><h2>Control Logic</h2><p>A clocked execution state machine sequences instruction-memory access, operand collection, ALU requests, and result writeback. Module-enable values in the upper address bits select instruction memory, main memory, execution-register access, the matrix ALU, or the integer ALU. Read and write controls coordinate which module drives the shared bus.</p></section>
+            <section class="detail-section"><h2>Instruction / Opcode Handling</h2><p>Each instruction contains four 8-bit fields: opcode, destination, source one, and source two. Opcode families select matrix operations, integer operations, conditional branches, or stop. Operand encoding distinguishes main-memory locations from internal-register locations, and the matrix scale-immediate path treats the encoded source value as an immediate operand.</p></section>
+            <section class="detail-section"><h2>Integer Operations</h2><ul class="detail-card-grid"><li>Add</li><li>Subtract</li><li>Multiply</li><li>Divide with a zero-divisor guard</li></ul><p>The integer ALU operates on the lower 16 bits of its two input registers and returns the result on the wider shared data path.</p></section>
+            <section class="detail-section detail-section--accent"><h2>Branching &amp; Program Flow</h2><p>The execution engine buffers two operands for comparison and supports BNE, BEQ, BLT, and BGT conditions. A 12-bit instruction-sequencing counter advances during fetch and is adjusted forward or backward by the encoded branch offset when a condition is satisfied. The source does not implement a separate jump opcode.</p></section>
+            <section class="detail-section"><h2>Clock &amp; Reset Behavior</h2><p>The execution controller updates on the positive clock edge, while memory, ALU, and internal-register data-path blocks use the negative edge. An active-low reset initializes the controller state, instruction counter, decoded fields, internal storage, and bus-driving state.</p></section>
+            <section class="detail-section"><h2>Module Structure</h2><ul class="detail-badges"><li>InstructionMemory</li><li>MainMemory</li><li>Execution</li><li>MatrixAlu</li><li>IntegerAlu</li><li>top</li><li>TestMatrix</li></ul></section>
+            <section class="detail-section"><h2>Tools &amp; Technologies</h2><ul class="detail-badges"><li>SystemVerilog</li><li>HDL Simulation</li><li>Finite-State Control</li><li>Opcode Decoding</li><li>Shared-Bus Datapath</li><li>Waveform Dumping</li><li>EDA Playground-Compatible Testbench</li></ul></section>
+            <section class="detail-section source-code-section"><h2>Source Code</h2><p class="source-attribution"></p><div class="source-file"><div class="source-file-label"><span>educational-processor-design.sv</span><span>SystemVerilog</span></div><pre class="line-numbers code-viewer"><code class="language-verilog">// Educational Processor — Portfolio Display Copy
+// Author: Avash Aryal
+// Course starter structure adapted and extended for this project.
+// Updated for portfolio: November 2026
+// Executable statements are preserved; comments were clarified for public presentation.
+
+// This i s a header file that contains the parameters used in the entire project
+
+// module adresses
+parameter logic [3:0] MainMemEn = 0;
+parameter logic [3:0] RegisterEn = 1;
+parameter logic [3:0] InstrMemEn = 2;
+parameter logic [3:0] AluEn = 3;
+parameter logic [3:0] ExecuteEn = 4;
+parameter logic [3:0] IntAlu = 5;
+
+// Alu Register setup // same register sequence for both ALU&#x27;s
+parameter AluStatusIn = 0;
+parameter AluStatusOut = 1;
+parameter ALU_Source1 = 2;
+parameter ALU_Source2 = 3;
+parameter  ALU_Result = 4;
+parameter Overflow_err = 5;
+
+// opcodes
+parameter MMult1 = 0;
+parameter MMult2 = 1;
+parameter MMult3 = 2;
+parameter MAdd = 3;
+parameter MSub = 4;
+parameter MTranspose = 5;
+parameter MScale = 6;
+parameter MScaleImm = 7;
+parameter Iadd = 8&#x27;h10;
+parameter Isub = 8&#x27;h11;
+parameter Imult = 8&#x27;h12;
+parameter Idiv = 8&#x27;h13;
+parameter BNE=8&#x27;h20;
+parameter BEQ = 8&#x27;h21;
+parameter BLT = 8&#x27;h22;
+parameter BGT=8&#x27;h23;
+
+// Instructions
+// add the data at location 0 to the data at location 1 and place result in location 2
+
+parameter Instruct1 = 32&#x27;h 03_02_00_01; // add first matrix to second matrix store in memory
+
+parameter Instruct2 = 32&#x27;h 06_03_00_0a; // scale matrix 1 by whats in location A store in memory
+
+parameter Instruct3 = 32&#x27;h 10_10_0a_0b; // add 16 bit numbers in location a to b store in temp register
+
+parameter Instruct4 = 32&#x27;h 04_04_03_00; //Subtract the first matrix from the result in step 2 and store the result somewhere else in memory.
+
+parameter Instruct5 = 32&#x27;h 22_01_04_03;//IF mem04 &lt; mem03 goto 7 (Step 7 would be the next step)
+
+
+parameter Instruct6 = 32&#x27;h 05_05_02_00;//Transpose the result from step 1 store in memory
+
+parameter Instruct7 = 32&#x27;h 21_81_08_05;// IF mem 4 !- mem 8 goto step 6
+
+
+parameter Instruct8 = 32&#x27;h 07_11_03_08;//ScaleImm the result in step 2 by the result from step 3 store in a matrix register
+
+parameter Instruct9 = 32&#x27;h 00_06_04_05; //Multiply the result from step 4 by the result in step 5, store in memory. 4x4 * 4x4
+
+
+parameter Instruct10 = 32&#x27;h 12_0a_01_00;//Multiply the integer value in memory location 0 to location 1. Store it in memory location 0x0A
+
+parameter Instruct11 = 32&#x27;h 11_12_0a_01;//Subtract the integer value in memory location 01 from memory location 0x0A and store it in a register
+
+parameter Instruct12 = 32&#x27;h 13_0c_12_0a;//Divide the result from step 8 by the result in step 9  and store it in location 0x0B
+
+parameter Instruct13 = 32&#x27;h FF_00_00_00; // stop
+
+
+
+
+
+// Instruction memory.
+// holds the instructions that the processor will execute.
+//
+// the address lines are generic and each module must handle thier own decode.
+// The address bus is large enough that each module can contain a local address decode. This will save on multiple enmables.
+// bit 11-0 are for adressing inside each unit.
+// nWrite = 0 means databus is being written into the part on the falling edge of write
+// nRead = 0 means it is expected to drive the databus while this signal is low and the address is correct until the nRead goes high independent of addressd bus.
+
+
+
+//parameter MainMemEn = 0;
+//parameter RegisterEn = 1;
+//parameter InstrMemEn = 2;
+//parameter AluEn = 3;
+//parameter ExecuteEn = 4;
+//parameter IntAlu = 5;
+
+// Alu Register setup // same register sequence for both ALU&#x27;s
+//parameter AluStatusIn = 0;
+//parameter AluStatusOut = 1;
+//parameter ALU_Source1 = 2;
+//parameter ALU_Source2 = 3;
+//parameter  ALU_Result = 4;
+//parameter Overflow_err = 5;
+
+//////////////////////////////
+//Moved stop to third instruction for this example
+/////////////////////////////////////////////////
+// instruction: OPcode :: dest :: src1 :: src2 Each section is 8 bits.
+//Stop::FFh::00::00::00
+//MMult1::00h::Reg/mem::Reg/mem::Reg/mem
+//MMult2::01h::Reg/mem::Reg/mem::Reg/mem
+//MMult3::02h::Reg/mem::Reg/mem::Reg/mem
+//Madd::03h::Reg/mem::Reg/mem::Reg/mem
+//Msub::04h::Reg/mem::Reg/mem::Reg/mem
+//Mtranspose::05h::Reg/mem::Reg/mem::Reg/mem
+//MScale::06h::Reg/mem::Reg/mem::Reg/mem
+//MScaleImm::07h:Reg/mem::Reg/mem::Immediate
+//IntAdd::10h::Reg/mem::Reg/mem::Reg/mem
+//IntSub::11h::Reg/mem::Reg/mem::Reg/mem
+//IntMult::12h::Reg/mem::Reg/mem::Reg/mem
+//IntDiv::13h::Reg/mem::Reg/mem::Reg/mem
+
+
+// Read-only instruction storage and bus interface.
+module InstructionMemory(Clk,Dataout, address, nRead,nReset);
+// NOTE the lack of datain and write. This is because this is a ROM model
+
+
+
+input logic nRead, nReset, Clk;
+input logic [15:0] address;
+
+inout logic [31:0] Dataout; // 1 - 32 it instructions at a time.
+
+  logic [31:0]InstructMemory[15]; // this is the physical memory
+  logic ItsMe; // the address bus is talkig to this module. used to enable tristate buffers.
+  logic [31:0] InstToOutput; // this is a temporary data register to be set to go to the output.
+// This memory is designed to be driven into a data multiplexor.
+
+  always_ff @(negedge Clk or negedge nReset)
+begin
+  if (!nReset)
+    InstToOutput = 0;
+  else begin
+  if(address[15:12] == InstrMemEn) // talking to Instruction IntstrMemEn
+		begin
+		    ItsMe = 1;
+			if(~nRead)begin
+				InstToOutput &lt;= InstructMemory[address[11:0]]; // data will reamin on dataout until it is changed.
+			end
+		end
+	else ItsMe = 0;
+	end
+end // from negedge nRead
+
+always @(negedge nReset)
+begin
+//	set in the default instructions
+//
+	InstructMemory[0] = Instruct1;
+	InstructMemory[1] = Instruct2;
+  	InstructMemory[2] = Instruct3;
+	InstructMemory[3] = Instruct4;
+	InstructMemory[4] = Instruct5;
+	InstructMemory[5] = Instruct6;
+	InstructMemory[6] = Instruct7;
+	InstructMemory[7] = Instruct8;
+	InstructMemory[8] = Instruct9;
+	InstructMemory[9] = Instruct10;
+	InstructMemory[10] = Instruct11;
+	InstructMemory[11] = Instruct12;
+	InstructMemory[12] = Instruct13;
+end
+
+assign Dataout = ItsMe ? InstToOutput : 32&#x27;bz;
+
+
+
+endmodule
+
+
+//
+//
+
+
+
+// Read/write data memory connected to the shared processor bus.
+module MainMemory(Clk,Dataout, address, nRead,nWrite, nReset);
+
+
+
+input logic nRead,nWrite, nReset, Clk;
+input logic [15:0] address;
+
+inout logic [255:0] Dataout; // to the CPU
+
+  logic [255:0]MainMemory[14]; // this is the physical memory
+  logic ItsMe; // the address bus is talkig to this module. used to enable tristate buffers.
+  logic [255:0] MemToOutput; // this is a temporary data register to be set to go to the output.
+
+always_ff @(negedge Clk or negedge nReset)
+begin
+	if (~nReset) begin
+	MainMemory[0] = 256&#x27;h000f_000c_0008_000d_0008_0010_000f_0009_000b_0008_0006_0007_000c_0005_000c_0008;
+      MainMemory[1] = 256&#x27;h000a_0005_0007_0009_000b_0004_000e_0002_0007_0006_0007_0008_000c_0007_0004_0009;
+	MainMemory[2] = 256&#x27;h0;
+	MainMemory[3] = 256&#x27;h0;
+	MainMemory[4] = 256&#x27;h0;
+	MainMemory[5] = 256&#x27;h0;
+	MainMemory[6] = 256&#x27;h0;
+	MainMemory[7] = 256&#x27;h0;
+	MainMemory[8] = 256&#x27;h0;
+	MainMemory[9] = 256&#x27;h0;
+      MainMemory[10] = 256&#x27;h03;
+      MainMemory[11] = 256&#x27;h0c;
+	MainMemory[12] = 256&#x27;h0;
+	MainMemory[13] = 256&#x27;h0;
+
+
+      MemToOutput=0;
+	end
+
+  else if(address[15:12] == MainMemEn) // talking to Instruction
+		begin
+
+			if (~nRead)begin
+			  ItsMe = 1; // Only Drive Bus on read
+				MemToOutput = MainMemory[address[11:0]]; // data will remain on dataout until it is changed.
+			end
+			if(~nWrite)begin
+			ItsMe = 0; // only drive bus on read
+		    MainMemory[address[11:0]] &lt;= Dataout;
+			end
+		end
+    else ItsMe = 0;
+end
+
+assign Dataout = ItsMe ? MemToOutput : 256&#x27;bz;
+endmodule
+
+/////////////////////////////////////
+//Matrix Calculations
+/////////////////////////////////////
+// Matrix datapath for add, subtract, transpose, scale, and multiply operations.
+module MatrixAlu(Clk,DataOut, address, nRead,nWrite, nReset);
+
+  input logic nRead,nWrite, nReset, Clk;
+  input logic [15:0] address;
+
+  inout logic [255:0] DataOut;
+  logic [15:0] matrices [0:1][0:3][0:3];
+
+  logic ItsMe;
+  logic [255:0] MatrixToOutput;
+
+  logic [33:0] sum;
+
+  always_ff @(negedge Clk or negedge nReset)
+    begin
+      if(!nReset)
+        begin
+          matrices &lt;= &#x27;{default:&#x27;0};
+          ItsMe&lt;=0;
+        end
+      else if(address[15:12] == AluEn)
+        begin
+          ItsMe&lt;=0;
+          if (~nWrite)
+            begin
+              for (int i = 0; i &lt; 4; i = i + 1)
+    		    begin
+        			for (int j = 0; j &lt; 4; j = j + 1)
+        			begin
+                      matrices[address[3:0]][i][j] &lt;= DataOut[((i*4+j)*16) +: 16];
+        			end
+    			end
+            end
+          if(~nRead)
+            begin
+                if(address[11:4] == MAdd)
+                begin
+                    for(int i = 0; i &lt; 4; i = i + 1)
+                    begin
+                        for(int j = 0; j &lt; 4; j = j + 1)
+                        begin
+                            MatrixToOutput[((i*4+j)*16) +: 16]
+                                &lt;= matrices[0][i][j]
+                                 + matrices[1][i][j];
+                        end
+                    end
+                end
+              if(address[11:4] == MSub)
+                begin
+                    for(int i = 0; i &lt; 4; i = i + 1)
+                    begin
+                        for(int j = 0; j &lt; 4; j = j + 1)
+                        begin
+                            MatrixToOutput[((i*4+j)*16) +: 16]
+                                &lt;= matrices[0][i][j]
+                                 - matrices[1][i][j];
+                        end
+                    end
+                end
+              if(address[11:4] == MTranspose)
+                begin
+                    for(int i = 0; i &lt; 4; i = i + 1)
+                    begin
+                        for(int j = 0; j &lt; 4; j = j + 1)
+                        begin
+                            MatrixToOutput[((i*4+j)*16) +: 16]
+                                     &lt;= matrices[0][j][i];
+                        end
+                    end
+                end
+              if(address[11:4] == MScale)
+                begin
+                    for(int i = 0; i &lt; 4; i = i + 1)
+                    begin
+                        for(int j = 0; j &lt; 4; j = j + 1)
+                        begin
+                            MatrixToOutput[((i*4+j)*16) +: 16]
+                                &lt;= matrices[0][i][j]
+                                 * matrices[1][0][0];
+                        end
+                    end
+                end
+              if(address[11:4] == MScaleImm)
+                begin
+                    for(int i = 0; i &lt; 4; i = i + 1)
+                    begin
+                        for(int j = 0; j &lt; 4; j = j + 1)
+                        begin
+                            MatrixToOutput[((i*4+j)*16) +: 16]
+                                &lt;= matrices[0][i][j]
+                         		 * matrices[1][0][0];
+                        end
+                    end
+                end
+              if(address[11:4] == MMult1)
+                begin
+                    for(int i = 0; i &lt; 4; i = i + 1)
+                    begin
+                        for(int j = 0; j &lt; 4; j = j + 1)
+                        begin
+                          sum=0;
+                          for(int k=0; k&lt;4; k++)
+                            begin
+                              sum+=matrices[0][i][k]*matrices[1][k][j];
+                            end
+                            MatrixToOutput[((i*4+j)*16) +: 16]
+                          &lt;= sum[15:0];
+                        end
+                    end
+                end
+
+                ItsMe &lt;= 1;
+            end
+        end
+       else
+        ItsMe&lt;=0;
+    end
+
+
+  assign DataOut= ItsMe ? MatrixToOutput : 256&#x27;bz;
+
+endmodule
+
+
+//////////////////////////////////////
+//Execution Engine
+/////////////////////////////////////
+// Fetch/decode control, internal registers, branch handling, and datapath sequencing.
+module Execution(Clk,DataOut, address, nRead,nWrite, nReset);
+  output logic nRead,nWrite;
+  input logic nReset, Clk;
+  output logic [15:0] address;
+
+  inout logic [255:0] DataOut;
+
+  logic [255:0] InternalReg[3:0];
+  logic ItsMe, InsMemRead;
+
+  logic [255:0] MatrixToOutput;
+
+  logic [2:0] State;
+  logic [11:0] count;
+  logic [2:0] AluStatus;
+
+  logic [7:0] OpCode;
+  logic [7:0] Destination;
+  logic [7:0] Source1;
+  logic [7:0] Source2;
+
+  logic [255:0] registersForBranch [0:1];
+  logic BranchEn;
+
+
+  always_ff @(posedge Clk or negedge nReset)
+    begin
+      if(~nReset)
+        begin
+
+          address&lt;=0;
+          registersForBranch &lt;= &#x27;{default:&#x27;0};
+          BranchEn&lt;=0;
+          nRead&lt;=1;
+          nWrite&lt;=1;
+          State&lt;=InstrMemEn;
+          count&lt;=0;
+          InsMemRead&lt;=0;
+          OpCode&lt;=0;
+          Source2&lt;=0;
+          Source1&lt;=0;
+          Destination&lt;=0;
+        end
+
+
+////////For Branching
+      else if(BranchEn)
+        begin
+          if(OpCode==BNE)
+            begin
+              if(registersForBranch[0]!=registersForBranch[1])
+                begin
+                  if(Destination[7:4]==4&#x27;h0)
+                    begin
+                      count &lt;= count + Destination[6:0];
+                    end
+                  else
+                    begin
+                      count &lt;= count - Destination[6:0] - 1;
+                    end
+                end
+            end
+          else if(OpCode==BEQ)
+            begin
+              if(registersForBranch[0]==registersForBranch[1])
+                begin
+                  if(Destination[7:4]==4&#x27;h0)
+                    begin
+                      count &lt;= count + Destination[6:0];
+                    end
+                  else
+                    begin
+                      count &lt;= count - Destination[6:0] - 1;
+                    end
+                end
+            end
+          else if(OpCode==BLT)
+            begin
+              if(registersForBranch[0]&lt;registersForBranch[1])
+                begin
+                  if(Destination[7:4]==4&#x27;h0)
+                    begin
+                      count &lt;= count + Destination[6:0];
+                    end
+                  else
+                    begin
+                      count &lt;= count - Destination[6:0] - 1;
+                    end
+                end
+            end
+          else if(OpCode==BGT)
+            begin
+              if(registersForBranch[0]&gt;registersForBranch[1])
+                begin
+                  if(Destination[7:4]==4&#x27;h0)
+                    begin
+                      count &lt;= count + Destination[6:0];
+                    end
+                  else
+                    begin
+                      count &lt;= count - Destination[6:0] - 1;
+                    end
+                end
+            end
+          State&lt;=InstrMemEn;
+          nRead&lt;=1;
+          nWrite&lt;=1;
+          BranchEn&lt;=0;
+        end
+
+
+//////For Operation
+      else if(OpCode!=8&#x27;hff)
+        begin
+          nRead&lt;=1;
+      	  nWrite&lt;=1;
+
+
+          case (State)
+            InstrMemEn:
+              begin
+              address &lt;= {InstrMemEn, count};
+			  count &lt;= count + 1;
+              nRead&lt;=0;
+              State&lt;=MainMemEn;
+              AluStatus&lt;=ALU_Source1;
+              InsMemRead&lt;=1;
+              end
+//////////////MainMemEn
+            MainMemEn:
+              begin
+              if(InsMemRead==1)
+           		 begin
+              	 OpCode      &lt;= DataOut[31:24];
+			  	 Destination &lt;= DataOut[23:16];
+			  	 Source1     &lt;= DataOut[15:8];
+			  	 Source2     &lt;= DataOut[7:0];
+              	 InsMemRead&lt;=0;
+                 end
+               else if(AluStatus==ALU_Source1)
+                  begin
+                    if(Source1[7:4]==4&#x27;h0)
+                      begin
+                    	address&lt;={MainMemEn,4&#x27;h0, Source1};
+                    	nRead&lt;=0;
+                    	State&lt;=AluEn;
+
+                      end
+                    else if(Source1[7:4]==4&#x27;h1)
+                      begin
+                        if(OpCode[7:4]==4&#x27;h2)
+                          begin
+                            registersForBranch[0]&lt;=InternalReg[Source1[3:0]];
+                            AluStatus&lt;=ALU_Source2;
+                          end
+                        else
+                          begin
+                        	address&lt;={ExecuteEn,8&#x27;h0, Source1[3:0]};
+                    		nRead&lt;=0;
+                    		State&lt;=AluEn;
+                          end
+                      end
+                  end
+                else if(AluStatus==ALU_Source2)
+                  begin
+                    if(OpCode==8&#x27;h07)
+                      begin
+                        address&lt;={ExecuteEn,4&#x27;h0,Source2};
+                        nRead&lt;=0;
+                        State&lt;=AluEn;
+                      end
+                    else if(Source2[7:4]==4&#x27;h0)
+                      begin
+                    	address&lt;={MainMemEn,4&#x27;h0, Source2};
+                    	nRead&lt;=0;
+                    	State&lt;=AluEn;
+                      end
+                    else if(Source2[7:4]==4&#x27;h1)
+                      begin
+                        if(OpCode[7:4]==4&#x27;h2)
+                          begin
+                            registersForBranch[1]&lt;=InternalReg[Source2[3:0]];
+                            BranchEn&lt;=1;
+                            AluStatus&lt;=ALU_Source1;
+                          end
+                        else
+                          begin
+                        	address&lt;={ExecuteEn,8&#x27;h0,Source2[3:0]};
+                       		nRead&lt;=0;
+                        	State&lt;=AluEn;
+                          end
+                      end
+                  end
+                else if(AluStatus==ALU_Result)
+                  begin
+                    if(Destination[7:4]==4&#x27;h0)
+                      begin
+                    	address&lt;={MainMemEn,4&#x27;h0, Destination};
+                    	nWrite&lt;=0;
+                    	State&lt;=InstrMemEn;
+                      end
+                    else if(Destination[7:4]==4&#x27;h1)
+                      begin
+                        address&lt;={ExecuteEn,8&#x27;h0, Destination[3:0]};
+                        nWrite&lt;=0;
+                        State&lt;=InstrMemEn;
+                      end
+                  end
+              end
+//////////////Alu En
+            AluEn:
+              begin
+                //for matirx
+                if(OpCode[7:4]==4&#x27;h0)
+                  begin
+                	if(AluStatus==ALU_Source1)
+                  	begin
+                        begin
+                    		address&lt;={AluEn, OpCode, 4&#x27;h0};
+                    		nWrite&lt;=0;
+                    		AluStatus&lt;=ALU_Source2;
+                    		State&lt;=MainMemEn;
+                        end
+                  	end
+                	else if(AluStatus==ALU_Source2)
+                  	begin
+                        begin
+                    		address&lt;={AluEn, OpCode,4&#x27;h1};
+                    		nWrite&lt;=0;
+                    		AluStatus&lt;=ALU_Result;
+                        end
+                  	end
+                	else if(AluStatus==ALU_Result)
+                  	begin
+                    	address&lt;={AluEn, OpCode, 4&#x27;h0};
+                    	nRead&lt;=0;
+                    	State&lt;=MainMemEn;
+                  	end
+                  end
+
+                //FOR Branching
+                else if(OpCode[7:4]==4&#x27;h2)
+                  begin
+                    if(AluStatus==ALU_Source1)
+                      begin
+                        registersForBranch[0]&lt;=DataOut;
+                        AluStatus&lt;=ALU_Source2;
+                        State&lt;=MainMemEn;
+                      end
+                    else if(AluStatus==ALU_Source2)
+                      begin
+                        registersForBranch[1]&lt;=DataOut;
+                        AluStatus&lt;=ALU_Source2;
+                        State&lt;=InstrMemEn;
+                        BranchEn&lt;=1;
+                      end
+                  end
+
+                 //for int
+                else if(OpCode[7:4]==4&#x27;h1)
+                   begin
+                     if(AluStatus==ALU_Source1)
+                  	begin
+                      address&lt;={IntAlu, OpCode, 4&#x27;h0};
+                    	nWrite&lt;=0;
+                    	AluStatus&lt;=ALU_Source2;
+                    	State&lt;=MainMemEn;
+                  	end
+                	else if(AluStatus==ALU_Source2)
+                  	begin
+                      address&lt;={IntAlu, OpCode,4&#x27;h1};
+                      nWrite&lt;=0;
+                      AluStatus&lt;=ALU_Result;
+                  	end
+                	else if(AluStatus==ALU_Result)
+                  	begin
+                      address&lt;={IntAlu, OpCode, 4&#x27;h0};
+                    	nRead&lt;=0;
+                    	State&lt;=MainMemEn;
+                  	end
+                   end
+              end
+          endcase
+        end
+      else
+        begin
+          State&lt;=InstrMemEn;
+          nRead&lt;=1;
+          nWrite&lt;=1;
+        end
+    end
+
+  always_ff @(negedge Clk or negedge nReset)
+begin
+	if (~nReset) begin
+	 InternalReg&lt;=&#x27;{default:&#x27;0};
+     MatrixToOutput&lt;=&#x27;{default:&#x27;0};
+      ItsMe&lt;=0;
+	end
+
+  else if(address[15:12] == ExecuteEn) // talking to Instruction
+		begin
+
+			if (~nRead)begin
+			  ItsMe = 1; // Only Drive Bus on read
+              if(OpCode==8&#x27;h07 &amp;&amp; AluStatus==ALU_Source2)
+                begin
+                  MatrixToOutput={244&#x27;h0,address[11:0]};
+                end
+              else
+                begin
+					MatrixToOutput = InternalReg[address[11:0]]; // data will 							remain on dataout until it is changed.
+                end
+			end
+			if(~nWrite)begin
+			ItsMe = 0; // only drive bus on read
+              InternalReg[address[11:0]] &lt;= DataOut;
+			end
+		end
+    else ItsMe = 0;
+end
+
+
+
+ assign DataOut=ItsMe? MatrixToOutput : 256&#x27;bz;
+endmodule
+
+
+
+
+////////////////////////////
+//////// Integer Operation
+////////////////////////////
+
+// Integer arithmetic datapath for add, subtract, multiply, and guarded divide.
+module IntegerAlu(Clk,DataOut, address, nRead,nWrite, nReset);
+  input logic nRead,nWrite, nReset, Clk;
+  input logic [15:0] address;
+
+  logic ItsMe;
+
+  inout logic [255:0] DataOut;
+
+  logic [255:0] integers [0:1];
+
+  logic [255:0] IntToOutput;
+
+  always_ff @(negedge Clk or negedge nReset)
+    begin
+      if(!nReset)
+        begin
+          integers &lt;= &#x27;{default:&#x27;0};
+          ItsMe&lt;=0;
+        end
+      else if(address[15:12] == IntAlu)
+        begin
+          ItsMe&lt;=0;
+          if (~nWrite)
+            begin
+              integers[address[3:0]]&lt;= DataOut;
+            end
+          if(~nRead)
+            begin
+              if(address[11:4] == Iadd)
+                begin
+                  IntToOutput&lt;= {240&#x27;b0,
+                    			integers[0][15:0] + integers[1][15:0]};
+                end
+              if(address[11:4] == Isub)
+                begin
+                  IntToOutput&lt;= {240&#x27;b0,
+                    			integers[0][15:0] - integers[1][15:0]};
+                end
+              if(address[11:4] == Imult)
+                begin
+                  IntToOutput&lt;= {240&#x27;b0,
+                    			integers[0][15:0] * integers[1][15:0]};
+                end
+              if(address[11:4] == Idiv)
+                begin
+                  if(integers[1][15:0] == 16&#x27;h0000)
+        			IntToOutput &lt;= 256&#x27;h0;
+    			  else
+        			IntToOutput &lt;= {240&#x27;b0,
+                        			integers[0][15:0] / integers[1][15:0]};
+                 end
+
+                ItsMe &lt;= 1;
+            end
+        end
+       else
+        ItsMe&lt;=0;
+    end
+
+
+  assign DataOut= ItsMe ? IntToOutput : 256&#x27;bz;
+
+endmodule
+</code></pre></div><div class="source-file"><div class="source-file-label"><span>educational-processor-testbench.sv</span><span>SystemVerilog</span></div><pre class="line-numbers code-viewer"><code class="language-verilog">// Educational Processor — Portfolio Display Copy
+// Author: Avash Aryal
+// Course starter structure adapted and extended for this project.
+// Updated for portfolio: November 2026
+// Executable statements are preserved; comments were clarified for public presentation.
+
+// Educational processor simulation top module
+//
+// Main memory MUST be allocated in the mainmemory module as per teh next line.
+//  logic [255:0]MainMemory[12]; // this is the physical memory
+//
+
+
+
+// Top-level simulation harness connecting memory, control, and ALU modules.
+module top ();
+
+wire [255:0] DataBus;
+logic nRead,nWrite,nReset,Clk;
+logic [15:0] address;
+
+logic Fail;
+
+InstructionMemory  U1(Clk,DataBus, address, nRead,nReset);
+
+MainMemory  U2(Clk,DataBus, address, nRead,nWrite, nReset);
+
+Execution  U3(Clk,DataBus, address, nRead,nWrite, nReset);
+
+MatrixAlu  U4(Clk,DataBus, address, nRead,nWrite, nReset);
+
+IntegerAlu  U5(Clk,DataBus, address, nRead,nWrite, nReset);
+
+TestMatrix  UTest(Clk,nReset);
+
+  initial begin //. setup to allow waveforms for edaplayground
+   $dumpfile(&quot;dump.vcd&quot;);
+   $dumpvars(1);
+    Fail = 0; // SETUP TO PASS TO START
+ end
+
+always @(DataBus) begin // this block checks to make certain the proper data is in the memory.
+		if (DataBus[31:0] == 32&#x27;hff000000)
+// we are about to execute the stop
+begin
+// Print out the entire contents of main memory so I can copy and paste.
+			$display ( &quot;memory location 0 = %h&quot;, U2.MainMemory[0]);
+			$display ( &quot;memory location 1 = %h&quot;, U2.MainMemory[1]);
+			$display ( &quot;memory location 2 = %h&quot;, U2.MainMemory[2]);
+			$display ( &quot;memory location 3 = %h&quot;, U2.MainMemory[3]);
+			$display ( &quot;memory location 4 = %h&quot;, U2.MainMemory[4]);
+			$display ( &quot;memory location 5 = %h&quot;, U2.MainMemory[5]);
+			$display ( &quot;memory location 6 = %h&quot;, U2.MainMemory[6]);
+			$display ( &quot;memory location 7 = %h&quot;, U2.MainMemory[7]);
+			$display ( &quot;memory location 8 = %h&quot;, U2.MainMemory[8]);
+			$display ( &quot;memory location 9 = %h&quot;, U2.MainMemory[9]);
+			$display ( &quot;memory location 10 = %h&quot;, U2.MainMemory[10]);
+			$display ( &quot;memory location 11 = %h&quot;, U2.MainMemory[11]);
+			$display ( &quot;memory location 12 = %h&quot;, U2.MainMemory[12]);
+			$display ( &quot;memory location 13 = %h&quot;, U2.MainMemory[13]);
+
+			$display ( &quot;Imternal Reg location 0 = %h&quot;, U3.InternalReg[0]);
+			$display ( &quot;Internal reg location 1 = %h&quot;, U3.InternalReg[1]);
+			$display ( &quot;Internal reg location 2 = %h&quot;, U3.InternalReg[2]);
+			$display ( &quot;Internal reg location 3 = %h&quot;, U3.InternalReg[3]);
+
+		if (U2.MainMemory[0] == 256&#x27;h000f000c0008000d00080010000f0009000b000800060007000c0005000c0008)
+			$display ( &quot;memory location 0 is Correct&quot;);
+		else begin Fail = 1; $display ( &quot;memory location 0 is Wrong&quot;); end
+		if (U2.MainMemory[1] == 256&#x27;h000a000500070009000b0004000e00020007000600070008000c000700040009)
+			$display ( &quot;memory location 1 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 1 is Wrong&quot;); end
+		if (U2.MainMemory[2] == 256&#x27;h00190011000f001600130014001d000b0012000e000d000f0018000c00100011)
+			$display ( &quot;memory location 2 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 2 is Wrong&quot;); end
+		if (U2.MainMemory[3] == 256&#x27;h002d00240018002700180030002d001b00210018001200150024000f00240018)
+			$display ( &quot;memory location 3 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 3 is Wrong&quot;); end
+		if (U2.MainMemory[4] == 256&#x27;h001e00180010001a00100020001e001200160010000c000e0018000a00180010)
+			$display ( &quot;memory location 4 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 4 is Wrong&quot;); end
+		if (U2.MainMemory[5] == 256&#x27;h001900130012001800110014000e000c000f001d000d00100016000b000f0011)
+			$display ( &quot;memory location 5 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 5 is Wrong&quot;); end
+		if (U2.MainMemory[6] == 256&#x27;h07b2070805c206aa06fe07dc05740612051e04d803da047e05ca05f804640548)
+			$display ( &quot;memory location 6 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 6 is Wrong&quot;); end
+		if (U2.MainMemory[7] == 256&#x27;h0000000000000000000000000000000000000000000000000000000000000000)
+			$display ( &quot;memory location 7 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 7 is Wrong&quot;); end
+		if (U2.MainMemory[8] == 256&#x27;h0000000000000000000000000000000000000000000000000000000000000000)
+			$display ( &quot;memory location 8 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 8 is Wrong&quot;); end
+		if (U2.MainMemory[9] == 256&#x27;h0000000000000000000000000000000000000000000000000000000000000000)
+			$display ( &quot;memory location 9 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 9 is Wrong&quot;); end
+		if (U2.MainMemory[10][15:0] == 16&#x27;h0048)
+			$display ( &quot;memory location 10 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 10 is Wrong&quot;); end
+		if (U2.MainMemory[11][15:0] == 16&#x27;h000c)
+			$display ( &quot;memory location 11 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 11 is Wrong&quot;); end
+		if (U2.MainMemory[12][15:0] == 16&#x27;h0000)
+			$display ( &quot;memory location 12 is Correct&quot;);
+		else begin Fail = 1;$display ( &quot;memory location 12 is Wrong&quot;); end
+
+
+		if (U3.InternalReg[0][15:0] == 16&#x27;h000f)
+			$display ( &quot;Interal reg location 0 is Correct&quot;);
+		else begin Fail = 1; $display ( &quot;Internal Register 0 is Wrong&quot;); end
+		if (U3.InternalReg[1] == 256&#x27;h0168012000c0013800c00180016800d8010800c0009000a801200078012000c0)
+			$display ( &quot;Internal Reg location 1 is Correct&quot;);
+		else begin Fail = 1; $display ( &quot;Internal Register 1 is Wrong&quot;); end
+		if (U3.InternalReg[2][15:0] == 16&#x27;h003f)
+			$display ( &quot;Internal Reg location 2 is Correct&quot;);
+		else begin Fail = 1; $display ( &quot;Internal Register 2 is Wrong&quot;); end
+
+        if (Fail) begin
+        $display(&quot;********************************************&quot;);
+        $display(&quot; Project did not return the proper values&quot;);
+        $display(&quot;********************************************&quot;);
+        end
+        else begin
+        $display(&quot;********************************************&quot;);
+        $display(&quot; Project PASSED memory check&quot;);
+        $display(&quot;********************************************&quot;);
+        end
+
+        end
+
+end
+
+
+endmodule
+
+
+
+
+
+
+
+
+
+// Generic Test bench It drives only clock and reset.
+
+
+// Testbench clock/reset generation and end-of-run memory reporting.
+module TestMatrix  (Clk,nReset);
+
+	output logic Clk,nReset; // we are driving these signals from here.
+
+	initial begin
+		Clk = 0;
+		nReset = 1;
+	#5 nReset = 0;
+	#5 nReset = 1;
+	end
+
+	always  #5 Clk = ~Clk;
+
+
+initial
+begin
+    #1200;
+
+    $display(&quot;\n================================================&quot;);
+	$display(&quot;          ALL MAIN MEMORY VALUES&quot;);
+	$display(&quot;================================================&quot;);
+
+	for (int i = 0; i &lt; 14; i = i + 1)
+	begin
+    	$display(&quot;Memory[%0d] = %064h&quot;, i, $root.top.U2.MainMemory[i]);
+	end
+
+	$display(&quot;================================================\n&quot;);
+
+    #10;
+    $finish;
+end
+
+	endmodule
+</code></pre></div></section>
+        </div>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-verilog.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+</body>
+</html>

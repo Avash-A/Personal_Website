@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academic Projects | Avash Aryal</title>
-    <link rel="stylesheet" href="styles/styles.css?v=20260915">
+    <link rel="stylesheet" href="styles/styles.css?v=20261106">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -17,91 +17,100 @@
             <span class="btn-icon"><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
         </a>
 
-        <header class="education-hero">
+        <header class="education-hero academic-projects-hero">
             <h1>ACADEMIC PROJECTS</h1>
             <p class="education-concentration">Selected coursework-based engineering projects and laboratory work.</p>
         </header>
 
         <p class="academic-projects-intro">These projects represent selected coursework and laboratory work across semiconductor devices, embedded systems, digital hardware, VLSI, and circuit design.</p>
 
-        <section class="academic-project-grid" aria-label="Academic project categories">
-            <article class="academic-project-card">
-                <h2>VLSI Design</h2>
-                <p>CMOS transistor-level design, logic-gate analysis, timing evaluation, and layout work.</p>
-                <ul class="academic-topic-list" aria-label="VLSI Design topics and tools">
-                    <li>CMOS inverter</li>
-                    <li>NAND / NOR / XNOR</li>
-                    <li>transistor sizing</li>
-                    <li>rise/fall-time analysis</li>
-                    <li>MicroWind</li>
-                    <li>LTspice</li>
-                </ul>
-            </article>
+        <section class="academic-project-section" aria-labelledby="featured-projects-heading">
+            <h2 class="academic-section-heading" id="featured-projects-heading">Featured Projects</h2>
+            <div class="academic-featured-grid">
+                <a class="academic-featured-card" href="vlsi-8bit-adder.html" aria-label="View CMOS 8-Bit Adder VLSI Design project">
+                    <span class="academic-feature-label">Featured Project</span>
+                    <h3>CMOS 8-Bit Adder VLSI Design</h3>
+                    <p class="academic-feature-subtitle">Transistor-Level Design, Simulation, and Physical Layout</p>
+                    <p>Designed an 8-bit CMOS adder through a transistor-level VLSI design flow. The project began with circuit and logic development in LTspice and progressed to physical CMOS layout implementation in MicroWind, connecting schematic-level circuit behavior with integrated-circuit layout.</p>
+                    <div class="academic-card-group">
+                        <h4>Design Flow</h4>
+                        <ol class="academic-flow-list">
+                            <li>Logic Design</li>
+                            <li>CMOS Transistor-Level Implementation</li>
+                            <li>LTspice Simulation</li>
+                            <li>Timing / Switching Analysis</li>
+                            <li>MicroWind Physical Layout</li>
+                            <li>Layout Review / Verification</li>
+                        </ol>
+                    </div>
+                    <ul class="academic-topic-list" aria-label="VLSI project concepts and tools">
+                        <li>8-bit binary addition</li><li>CMOS</li><li>transistor sizing</li><li>propagation delay</li><li>rise/fall behavior</li><li>LTspice</li><li>MicroWind</li>
+                    </ul>
+                    <span class="academic-project-action">View Project <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+                </a>
 
-            <article class="academic-project-card">
-                <h2>Embedded Systems &amp; Microprocessors</h2>
-                <p>Embedded programming and hardware interfacing using Xilinx Zynq and memory-mapped peripherals.</p>
-                <ul class="academic-topic-list" aria-label="Embedded Systems and Microprocessors topics and tools">
-                    <li>GPIO</li>
-                    <li>7-segment display</li>
-                    <li>UART</li>
-                    <li>SPI / I2C</li>
-                    <li>timer-based PWM</li>
-                    <li>XADC data acquisition</li>
-                    <li>C / embedded C</li>
-                    <li>Xilinx Zynq</li>
-                </ul>
-            </article>
+                <a class="academic-featured-card" href="hdl-processor.html" aria-label="View Simple Educational Processor project and source code">
+                    <span class="academic-feature-label">Featured Project</span>
+                    <h3>Simple Educational Processor</h3>
+                    <p class="academic-feature-subtitle">HDL-Based Processor Architecture with Integer Operations and Branching</p>
+                    <p>Developed and extended a modular SystemVerilog educational processor from a course starter structure. The design uses instruction and main-memory modules, internal registers, finite-state control, separate integer and matrix ALUs, opcode decoding, and conditional branch handling.</p>
+                    <div class="academic-card-group">
+                        <h4>Implemented Architecture</h4>
+                        <ul class="academic-feature-list">
+                            <li>fetch and decoded instruction fields</li>
+                            <li>memory/register operand routing</li>
+                            <li>integer add, subtract, multiply, and divide</li>
+                            <li>matrix arithmetic datapath</li>
+                            <li>BNE, BEQ, BLT, and BGT branches</li>
+                            <li>active-low reset and clocked state sequencing</li>
+                        </ul>
+                    </div>
+                    <ul class="academic-topic-list" aria-label="Processor project concepts and tools">
+                        <li>SystemVerilog</li><li>FSM control</li><li>opcode decoding</li><li>shared bus</li><li>integer ALU</li><li>branch control</li>
+                    </ul>
+                    <span class="academic-project-action">View Processor &amp; Source Code <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+                </a>
+            </div>
+        </section>
 
-            <article class="academic-project-card">
-                <h2>Semiconductor Manufacturing Lab</h2>
-                <p>Hands-on semiconductor fabrication and wafer-processing laboratory work.</p>
-                <ul class="academic-topic-list" aria-label="Semiconductor Manufacturing Lab topics and tools">
-                    <li>silicon oxidation</li>
-                    <li>oxide-thickness metrology</li>
-                    <li>PVD</li>
-                    <li>vacuum diagnostics</li>
-                    <li>photolithography</li>
-                    <li>etching</li>
-                    <li>wafer pattern transfer</li>
-                </ul>
-            </article>
+        <section class="academic-project-section" aria-labelledby="additional-work-heading">
+            <h2 class="academic-section-heading" id="additional-work-heading">Additional Engineering Work</h2>
+            <div class="academic-additional-grid">
+                <article class="academic-project-card">
+                    <h3>Xilinx Zynq Embedded Systems</h3>
+                    <p>Developed embedded C programs on a Xilinx Zynq platform to interface with memory-mapped hardware peripherals and implement low-level control and data-acquisition tasks.</p>
+                    <ul class="academic-topic-list" aria-label="Xilinx Zynq work areas">
+                        <li>memory-mapped GPIO</li><li>7-segment display control</li><li>UART communication</li><li>SPI / I2C</li><li>timer-based PWM</li><li>XADC data acquisition</li><li>embedded C</li><li>ARM / FPGA-based Zynq</li>
+                    </ul>
+                    <p class="academic-focus-line">Focused on understanding the interaction between processor software, memory-mapped peripherals, and programmable hardware.</p>
+                </article>
 
-            <article class="academic-project-card">
-                <h2>Digital Logic &amp; HDL</h2>
-                <p>Digital hardware design using logic circuits, Verilog, and FPGA-based implementation.</p>
-                <ul class="academic-topic-list" aria-label="Digital Logic and HDL topics and tools">
-                    <li>combinational logic</li>
-                    <li>sequential logic</li>
-                    <li>Verilog / HDL</li>
-                    <li>FPGA</li>
-                    <li>digital system design</li>
-                </ul>
-            </article>
+                <article class="academic-project-card">
+                    <h3>Semiconductor Manufacturing &amp; Fabrication Lab</h3>
+                    <p>Completed hands-on semiconductor-processing laboratory work covering wafer oxidation, thin-film measurement, vacuum systems, physical vapor deposition, photolithography, and etching.</p>
+                    <ul class="academic-topic-list" aria-label="Semiconductor manufacturing work areas">
+                        <li>silicon oxidation</li><li>oxide-thickness metrology</li><li>Filmetrics measurement</li><li>vacuum pump-down behavior</li><li>rate-of-rise diagnostics</li><li>PVD</li><li>photolithography</li><li>photoresist processing</li><li>etching</li><li>wafer-pattern transfer</li>
+                    </ul>
+                    <p class="academic-focus-line">Used photolithography and etching processes to transfer a patterned Bobcat structure onto a wafer.</p>
+                </article>
 
-            <article class="academic-project-card">
-                <h2>Microelectronics &amp; Device Analysis</h2>
-                <p>MOSFET and CMOS device analysis at the transistor and circuit level.</p>
-                <ul class="academic-topic-list" aria-label="Microelectronics and Device Analysis topics and tools">
-                    <li>MOSFET operating regions</li>
-                    <li>transfer/output characteristics</li>
-                    <li>CMOS behavior</li>
-                    <li>device-level calculations</li>
-                    <li>transistor-level circuit analysis</li>
-                </ul>
-            </article>
+                <article class="academic-project-card">
+                    <h3>Microelectronics &amp; MOSFET Device Analysis</h3>
+                    <p>Analyzed MOSFET and CMOS behavior from the device level through transistor-level circuit operation, connecting semiconductor-device physics with practical microelectronic circuit behavior.</p>
+                    <ul class="academic-topic-list" aria-label="Microelectronics coursework topics">
+                        <li>MOSFET operating regions</li><li>threshold behavior</li><li>transfer characteristics</li><li>output characteristics</li><li>CMOS switching</li><li>transistor-level circuit analysis</li><li>biasing</li><li>device-level calculations</li>
+                    </ul>
+                </article>
 
-            <article class="academic-project-card">
-                <h2>Circuit Simulation</h2>
-                <p>Simulation and analysis of electrical and transistor-level circuits.</p>
-                <ul class="academic-topic-list" aria-label="Circuit Simulation topics and tools">
-                    <li>RC transient analysis</li>
-                    <li>circuit response</li>
-                    <li>switching behavior</li>
-                    <li>LTspice</li>
-                    <li>timing analysis</li>
-                </ul>
-            </article>
+                <article class="academic-project-card">
+                    <h3>Circuit Analysis &amp; LTspice Simulation</h3>
+                    <p>Used LTspice to analyze transient and switching behavior in electrical and transistor-level circuits, connecting analytical circuit calculations with simulated response.</p>
+                    <ul class="academic-topic-list" aria-label="Circuit simulation work areas">
+                        <li>transient analysis</li><li>RC response</li><li>switching behavior</li><li>timing</li><li>waveform interpretation</li><li>transistor-level circuits</li><li>LTspice</li>
+                    </ul>
+                    <p class="academic-focus-line">LTspice also supported the VLSI and power-electronics design workflow.</p>
+                </article>
+            </div>
         </section>
     </main>
 </body>
